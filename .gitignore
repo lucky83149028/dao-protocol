@@ -8,3 +8,4 @@ contracts/.DS_Store
 .DS_Store
 
 package-lock.json
+deployments

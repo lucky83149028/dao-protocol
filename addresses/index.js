@@ -43,4 +43,11 @@ module.exports = {
       yVaultAddress: "0x0c9Ddf949e32221612145807e34483Ccf946B2b9",
     },
   },
+  ropsten: {
+    USDT: {
+      tokenAddress: "0x0736d0c130b2ead47476cc262dbed90d7c4eeabd",
+      yEarnAddress: "0xDb12E805d004698FC58F6e4fbdD876268DF2dfFe",
+      yVaultAddress: "0x359902517F43b8d38cF9718fe90e552375476F05",
+    },
+  },
 };

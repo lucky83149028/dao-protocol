@@ -1,5 +1,5 @@
 const { ethers } = require("hardhat");
-const { rinkeby: network_ } = require("../../addresses");
+const { ropsten: network_ } = require("../../addresses");
 
 const tokenAddress = network_.USDT.tokenAddress;
 
