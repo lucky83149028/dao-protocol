@@ -6,12 +6,12 @@ require("dotenv").config();
 
 module.exports = {
   networks: {
-    hardhat: {
-      forking: {
-        url: process.env.ALCHEMY_URL_MAINNET,
-        blockNumber: 12000000,
-      },
-    },
+    // hardhat: {
+    //   forking: {
+    //     url: process.env.ALCHEMY_URL_MAINNET,
+    //     blockNumber: 12000000,
+    //   },
+    // },
     // mainnet: {
     //   url: process.env.ALCHEMY_URL_MAINNET,
     //   accounts: [`0x${process.env.PRIVATE_KEY}`],
@@ -20,10 +20,14 @@ module.exports = {
     //   url: process.env.ALCHEMY_URL_RINKEBY,
     //   accounts: [`0x${process.env.PRIVATE_KEY}`],
     // },
+    ropsten: {
+      url: process.env.ALCHEMY_URL_ROPSTEN,
+      accounts: [`0x${process.env.PRIVATE_KEY}`],
+    },
   },
-  // etherscan: {
-  //   apiKey: process.env.ETHERSCAN_API_KEY,
-  // },
+  etherscan: {
+    apiKey: process.env.ETHERSCAN_API_KEY,
+  },
   solidity: {
     compilers: [
       {
