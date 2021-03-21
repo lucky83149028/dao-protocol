@@ -1,4 +1,4 @@
-const { ethers } = require("hardhat");
+const { ethers, upgrades } = require("hardhat");
 const { ropsten: network_ } = require("../../addresses");
 
 const tokenAddress = network_.USDT.tokenAddress;
@@ -18,11 +18,11 @@ module.exports = async ({ deployments }) => {
   });
   console.log("YearnFarmerUSDTv2 contract address: ", yfUSDTv2.address);
 
-  console.log("Now deploying YearnFarmerUSDTv2...");
-  const dvmUSDT = await deploy("DAOVaultMediumUSDT", {
-    from: deployer.address,
-    args: [tokenAddress, yfUSDTv2.address],
-  });
+  console.log("Now deploying DAOVaultMediumUSDT...");
+  const DAOVaultMediumUSDT = await ethers.getContractFactory("DAOVaultMediumUSDT");
+  const dvmUSDT = await upgrades.deployProxy(DAOVaultMediumUSDT, [tokenAddress,  yfUSDTv2.address]);
+  await dvmUSDT.deployed();
+
   console.log("DAOVaultMediumUSDT contract address: ", dvmUSDT.address);
 
   const yfUSDTContract = await ethers.getContract("YearnFarmerUSDTv2");

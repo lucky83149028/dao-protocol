@@ -11,11 +11,11 @@ module.exports = async () => {
     contract: "contracts/strategies/YearnFarmerUSDTv2.sol:YearnFarmerUSDTv2",
   });
 
-  const dvmUSDTContract = await ethers.getContract("DAOVaultMediumUSDT");
-  await run("verify:verify", {
-    address: dvmUSDTContract.address,
-    constructorArguments: [tokenAddress, yfUSDTContract.address],
-    contract: "contracts/vaults/DAOVaultMediumUSDT.sol:DAOVaultMediumUSDT",
-  });
+  // const dvmUSDTContract = await ethers.getContract("DAOVaultMediumUSDT");
+  // await run("verify:verify", {
+  //   address: dvmUSDTContract.address,
+  //   constructorArguments: [tokenAddress, yfUSDTContract.address],
+  //   contract: "contracts/vaults/DAOVaultMediumUSDT.sol:DAOVaultMediumUSDT",
+  // });
 };
 module.exports.tags = ["ropsten_USDT_verify"];

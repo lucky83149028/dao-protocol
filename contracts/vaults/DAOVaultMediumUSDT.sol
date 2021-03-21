@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.7.6;
 
-import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/math/SafeMath.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC20/SafeERC20Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/math/SafeMathUpgradeable.sol";
+
 
 /**
  * New strategy contract must utilize ERC20 and with functions below:
@@ -28,29 +30,39 @@ import "@openzeppelin/contracts/utils/Address.sol";
  * function approveMigrate()
  * -> Approve Vault to migrate all funds to new strategy
  */
-import "../../interfaces/IStrategy.sol";
+import "../../interfaces/IStrategyUpgradeable.sol";
 
 /// @title Contract to interact between user and strategy, and distribute daoToken to user
-contract DAOVaultMediumUSDT is ERC20, Ownable {
-    using SafeERC20 for IERC20;
-    using Address for address;
-    using SafeMath for uint256;
+contract DAOVaultMediumUSDT is Initializable, ERC20Upgradeable, OwnableUpgradeable {
+    using SafeERC20Upgradeable for IERC20Upgradeable;
+    using AddressUpgradeable for address;
+    using SafeMathUpgradeable for uint256;
 
-    IERC20 public token;
-    IStrategy public strategy;
+    bool private initialized;
+
+    IERC20Upgradeable public token;
+    IStrategyUpgradeable public strategy;
     address public pendingStrategy;
 
-    bool public canSetPendingStrategy = true;
+    bool public canSetPendingStrategy;
     uint256 public unlockTime;
     uint256 public constant LOCKTIME = 2 days;
 
     event MigrateFunds(address indexed fromStrategy, address indexed toStrategy, uint256 amount);
 
-    constructor(address _token, address _strategy) ERC20("DAO Vault Medium USDT", "dvmUSDT") {
+    function initialize(address _token, address _strategy) initializer public {
+        require(!initialized, "Contract instance has already been initialized");
+        initialized = true;
+
+        __Ownable_init();
+        __ERC20_init("DAO Vault Medium USDT", "dvmUSDT");
+
         _setupDecimals(6);
 
-        token = IERC20(_token);
-        strategy = IStrategy(_strategy);
+        token = IERC20Upgradeable(_token);
+        strategy = IStrategyUpgradeable(_strategy);
+
+        canSetPendingStrategy = true;
     }
 
     /**
@@ -146,11 +158,11 @@ contract DAOVaultMediumUSDT is ERC20, Ownable {
 
         token.safeTransferFrom(address(strategy), pendingStrategy, _amount);
         // Remove balance of old strategy token
-        IERC20 oldStrategyToken = IERC20(address(strategy));
+        IERC20Upgradeable oldStrategyToken = IERC20Upgradeable(address(strategy));
         oldStrategyToken.safeTransfer(address(strategy), oldStrategyToken.balanceOf(address(this)));
 
         address oldStrategy = address(strategy);
-        strategy = IStrategy(pendingStrategy);
+        strategy = IStrategyUpgradeable(pendingStrategy);
         pendingStrategy = address(0);
         canSetPendingStrategy = true;
 
